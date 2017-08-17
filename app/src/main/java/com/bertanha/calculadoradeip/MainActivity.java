@@ -2,8 +2,6 @@ package com.bertanha.calculadoradeip;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,11 +14,12 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     private EditText ip;
-    private EditText rede;
+    private EditText mask;
+    private EditText network;
     private EditText broadcast;
     private EditText firstHost;
     private EditText lastHost;
-    private EditText qtdHost;
+    private EditText amountHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void cleanFields() {
         ip.setText("");
-        rede.setText("");
+        mask.setText("");
+        network.setText("");
         broadcast.setText("");
         firstHost.setText("");
         lastHost.setText("");
-        qtdHost.setText("");
+        amountHost.setText("");
 
     }
 
@@ -80,19 +80,19 @@ public class MainActivity extends AppCompatActivity {
         int hostCount;
 
         ipBinary = parseToBinary(getIp());
-        maskBinary = generateBinaryMask(getMask(), false);
+        maskBinary = parseToBinary(getMask());
 
         ipRede = parseToString(addDotsInBinaryString(calculateRede(ipBinary, maskBinary)));
-        broadcastIp = parseToString(addDotsInBinaryString(calculateBroadcast(ipBinary, generateBinaryMask(getMask(), true))));
+        broadcastIp = parseToString(addDotsInBinaryString(calculateBroadcast(ipBinary, maskBinary)));
         firstHostIp = calculateFirstHost(ipRede);
         lastHostIp = calculateLastHost(broadcastIp);
         hostCount = getCountHost(firstHostIp, lastHostIp);
 
-        rede.setText(ipRede);
+        network.setText(ipRede);
         broadcast.setText(broadcastIp);
         firstHost.setText(firstHostIp);
         lastHost.setText(lastHostIp);
-        qtdHost.setText(String.valueOf(hostCount));
+        amountHost.setText(String.valueOf(hostCount));
 
     }
 
@@ -164,13 +164,25 @@ public class MainActivity extends AppCompatActivity {
     private String calculateBroadcast(String binaryIp, String binaryMask) {
         String broadcast;
         String ipWithoutDots = removeDots(binaryIp);
-        String maskWithoutDots = removeDots(binaryMask);
+        String inverseMaskWithoutDots = removeDots(reverseMask(binaryMask));
 
 
-        broadcast = operatorAndOr(ipWithoutDots, maskWithoutDots, "OR");
+        broadcast = operatorAndOr(ipWithoutDots, inverseMaskWithoutDots, "OR");
         Log.i("broadcast", "calculateBroadcast: " + broadcast);
 
         return broadcast;
+    }
+
+    private String reverseMask(String binaryMask) {
+        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder1 = new StringBuilder();
+
+        stringBuilder.append(binaryMask.substring(0, binaryMask.indexOf('0')));
+        stringBuilder1.append(binaryMask.substring(binaryMask.indexOf('0')));
+
+        System.out.println(stringBuilder.toString().replace('1', '0') + stringBuilder1.toString().replace('0', '1'));
+        return stringBuilder.toString().replace('1', '0') + stringBuilder1.toString().replace('0', '1');
+
     }
 
     private String operatorAndOr(String binaryIp, String binaryMask, String operator) {
@@ -197,7 +209,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean getBooleanFromBit(String binaryString, int index) {
-        return Boolean.parseBoolean(String.valueOf(binaryString.charAt(index - 1)).equals("1") ?  "true" : "false");
+        try {
+            return Boolean.parseBoolean(String.valueOf(binaryString.charAt(index - 1)).equals("1") ?  "true" : "false");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private String calculateRede(String binaryIp, String binaryMask) {
@@ -206,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         String maskWithoutDots = removeDots(binaryMask);
 
         rede = operatorAndOr(ipWithoutDots, maskWithoutDots, "AND");
-        Log.i("rede", "calculateRede: " + rede);
+        Log.i("network", "calculateRede: " + rede);
 
         return rede;
     }
@@ -266,33 +283,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getIp() {
-        String ip = "";
-        try {
-            if(getIpAndMask().contains("/")) {
-                ip = getIpAndMask().substring(0, getIpAndMask().indexOf("/"));
-            } else {
-                return getIpAndMask();
-            }
-        } catch (NumberFormatException e) {
-            Log.e("ERROR", "getOnlyIp: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return ip;
+        return ip.getText().toString();
     }
 
 
-    private int getMask() {
-        int mask = 0;
-
-        try {
-            if(getIpAndMask().contains("/")) {
-                mask = Integer.parseInt(getIpAndMask().substring(getIpAndMask().indexOf("/") + 1));
-            }
-        } catch (NumberFormatException e) {
-            Log.e("ERROR", "getMaskLengthFromIp: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return mask;
+    private String getMask() {
+        return mask.getText().toString();
     }
 
     @NonNull
@@ -309,23 +305,6 @@ public class MainActivity extends AppCompatActivity {
 
         return stringBuilder.toString();
     }
-
-//    private String generateBinaryMaskReverse(int length) {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        for (int i = 1; i <= 32; i++) {
-//
-//            if(i <= length) {
-//                stringBuilder.append(0);
-//            } else {
-//                stringBuilder.append(1);
-//            }
-//            if(i < 32 && i %8 == 0) {
-//                stringBuilder.append(".");
-//            }
-//        }
-//
-//        return stringBuilder.toString();
-//    }
 
     private String binaryToString(String binaryIp) {
         String ipString = "";
@@ -355,12 +334,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFields() {
-        ip = (EditText) findViewById(R.id.edit_ip);
-        rede = (EditText) findViewById(R.id.edit_rede);
-        broadcast = (EditText) findViewById(R.id.edit_broadcast);
-        firstHost = (EditText) findViewById(R.id.edit_first_host);
-        lastHost = (EditText) findViewById(R.id.edit_last_host);
-        qtdHost = (EditText) findViewById(R.id.edit_qtd_host);
+        ip = (EditText) findViewById(R.id.et_ip);
+        mask = (EditText) findViewById(R.id.et_mask);
+        network = (EditText) findViewById(R.id.et_network);
+        broadcast = (EditText) findViewById(R.id.et_broadcast);
+        firstHost = (EditText) findViewById(R.id.et_first_host);
+        lastHost = (EditText) findViewById(R.id.et_last_host);
+        amountHost = (EditText) findViewById(R.id.et_amount_host);
     }
 
     @NonNull
