@@ -1,14 +1,8 @@
 <resources>
     <string name="app_name">IP Calculator</string>
     <string name="action_settings">Settings</string>
-    <string name="edit_ip">192.168.1.1/24</string>
-    <string name="button_calculate">Calculate</string>
-    <string name="edit_rede">rede</string>
-    <string name="edit_broadcast">broadcast</string>
-    <string name="edit_first_host">1º host</string>
-    <string name="edit_last_host">ult. host</string>
-    <string name="edit_qtd_host">qtd host</string>
-    <string name="button_clean">Clean</string>
+    <string name="bt_calculate">Calculate</string>
+    <string name="bt_clean">Clean</string>
     <string name="et_ip">IP Address</string>
     <string name="et_mask">Mask</string>
     <string name="et_network">Network Address</string>
