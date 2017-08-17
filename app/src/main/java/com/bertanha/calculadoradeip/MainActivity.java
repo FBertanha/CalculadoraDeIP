@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         calculateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calculateIP();
+                calculate();
             }
         });
 
@@ -67,34 +67,72 @@ public class MainActivity extends AppCompatActivity {
         lastHost.setText("");
         amountHost.setText("");
 
+        ip.requestFocus();
+
     }
 
 
-    public void calculateIP() {
+
+    public void calculate() {
         String ipBinary;
         String maskBinary;
-        String ipRede;
-        String broadcastIp;
-        String firstHostIp;
-        String lastHostIp;
+        String networkDecimal;
+        String broadcastDecimal;
+        String firstHostDecimal;
+        String lastHostDecimal;
         int hostCount;
+
+        if (!validateFields()) {
+            return;
+        }
 
         ipBinary = parseToBinary(getIp());
         maskBinary = parseToBinary(getMask());
 
-        ipRede = parseToString(addDotsInBinaryString(calculateRede(ipBinary, maskBinary)));
-        broadcastIp = parseToString(addDotsInBinaryString(calculateBroadcast(ipBinary, maskBinary)));
-        firstHostIp = calculateFirstHost(ipRede);
-        lastHostIp = calculateLastHost(broadcastIp);
-        hostCount = getCountHost(firstHostIp, lastHostIp);
+        networkDecimal = parseToString(addDotsInBinaryString(calculateRede(ipBinary, maskBinary)));
+        broadcastDecimal = parseToString(addDotsInBinaryString(calculateBroadcast(ipBinary, maskBinary)));
+        firstHostDecimal = calculateFirstHost(networkDecimal);
+        lastHostDecimal = calculateLastHost(broadcastDecimal);
+        hostCount = getCountHost(firstHostDecimal, lastHostDecimal);
 
-        network.setText(ipRede);
-        broadcast.setText(broadcastIp);
-        firstHost.setText(firstHostIp);
-        lastHost.setText(lastHostIp);
+        network.setText(networkDecimal);
+        broadcast.setText(broadcastDecimal);
+        firstHost.setText(firstHostDecimal);
+        lastHost.setText(lastHostDecimal);
         amountHost.setText(String.valueOf(hostCount));
 
     }
+
+    private boolean validateFields() {
+        return validateAddress(ip, getIp()) && validateAddress(mask, getMask());
+    }
+
+    private boolean validateAddress(EditText et, String address) {
+        String mAddress[] = address.split("\\.");
+
+        if (address.isEmpty()) {
+            et.setError(getString(R.string.et_err_empty));
+            return false;
+        }
+        if (mAddress.length != 4) {
+            et.setError(getString(R.string.et_err_length));
+            return false;
+        }
+        for (String a : mAddress) {
+            try {
+                if (Integer.parseInt(a) < 0 || Integer.parseInt(a) > 255) {
+                    et.setError(getString(R.string.et_err_out_of_range));
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                et.setError(getString(R.string.et_err_not_numeric));
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @NonNull
     private String calculateFirstHost(String ipRede) {
@@ -341,6 +379,8 @@ public class MainActivity extends AppCompatActivity {
         firstHost = (EditText) findViewById(R.id.et_first_host);
         lastHost = (EditText) findViewById(R.id.et_last_host);
         amountHost = (EditText) findViewById(R.id.et_amount_host);
+
+        //mask.addTextChangedListener(MaskWatcher.buildAddress());
     }
 
     @NonNull

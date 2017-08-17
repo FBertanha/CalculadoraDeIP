@@ -28,7 +28,8 @@
             android:id="@+id/et_ip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/et_ip" />
+            android:hint="@string/et_ip"
+            android:inputType="phone"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -42,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/et_mask"
-            android:text="255.255.255.0"/>
+            android:inputType="phone"/>
 
     </android.support.design.widget.TextInputLayout>
 
