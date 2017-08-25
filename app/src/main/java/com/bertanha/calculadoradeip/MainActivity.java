@@ -10,16 +10,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText ip;
     private EditText mask;
-    private EditText network;
-    private EditText broadcast;
-    private EditText firstHost;
-    private EditText lastHost;
-    private EditText amountHost;
+    private TextView network;
+    private TextView broadcast;
+    private TextView firstHost;
+    private TextView lastHost;
+    private TextView amountHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cleanFields() {
-        ip.setText("");
-        mask.setText("");
-        network.setText("");
-        broadcast.setText("");
-        firstHost.setText("");
-        lastHost.setText("");
-        amountHost.setText("");
+        String default_address = getString(R.string.tv_default_address);
+        //ip.setText(default_address);
+        //mask.setText(default_address);
+        network.setText(default_address);
+        broadcast.setText(default_address);
+        firstHost.setText(default_address);
+        lastHost.setText(default_address);
+        amountHost.setText(default_address);
 
         ip.requestFocus();
 
@@ -118,6 +120,19 @@ public class MainActivity extends AppCompatActivity {
             et.setError(getString(R.string.et_err_length));
             return false;
         }
+
+//        try {
+//            if (Integer.parseInt(mAddress[3]) >= 255) {
+//                et.setError(getString(R.string.et_err_out_of_range));
+//                return false;
+//            }
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//            et.setError(getString(R.string.et_err_not_numeric));
+//            return false;
+//        }
+
+
         for (String a : mAddress) {
             try {
                 if (Integer.parseInt(a) < 0 || Integer.parseInt(a) > 255) {
@@ -374,11 +389,11 @@ public class MainActivity extends AppCompatActivity {
     private void loadFields() {
         ip = (EditText) findViewById(R.id.et_ip);
         mask = (EditText) findViewById(R.id.et_mask);
-        network = (EditText) findViewById(R.id.et_network);
-        broadcast = (EditText) findViewById(R.id.et_broadcast);
-        firstHost = (EditText) findViewById(R.id.et_first_host);
-        lastHost = (EditText) findViewById(R.id.et_last_host);
-        amountHost = (EditText) findViewById(R.id.et_amount_host);
+        network = (TextView) findViewById(R.id.tv_network);
+        broadcast = (TextView) findViewById(R.id.tv_broadcast);
+        firstHost = (TextView) findViewById(R.id.tv_first_host);
+        lastHost = (TextView) findViewById(R.id.tv_last_host);
+        amountHost = (TextView) findViewById(R.id.tv_amount_host);
 
         //mask.addTextChangedListener(MaskWatcher.buildAddress());
     }

@@ -5,13 +5,14 @@
     <string name="bt_clean">Clean</string>
     <string name="et_ip">IP Address</string>
     <string name="et_mask">Mask</string>
-    <string name="et_network">Network Address</string>
-    <string name="et_broadcast">Broadcast Address</string>
-    <string name="et_first_host">First Host Address</string>
-    <string name="et_last_host">Last Host Address</string>
-    <string name="et_amount_host">Hosts</string>
+    <string name="tv_network">Network</string>
+    <string name="tv_broadcast">Broadcast</string>
+    <string name="tv_first_host">First Host</string>
+    <string name="tv_last_host">Last Host</string>
+    <string name="tv_amount_host">Hosts</string>
     <string name="et_err_length">invalid address format</string>
     <string name="et_err_not_numeric">only numbers and dots</string>
     <string name="et_err_out_of_range">value(s) out for range of 0 and 255</string>
     <string name="et_err_empty">this field cannot be empty</string>
+    <string name="tv_default_address">0.0.0.0</string>
 </resources>

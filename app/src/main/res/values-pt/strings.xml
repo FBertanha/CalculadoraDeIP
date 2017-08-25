@@ -5,11 +5,11 @@
     <string name="bt_clean">Limpar</string>
     <string name="et_ip">Endereço Ip</string>
     <string name="et_mask">Máscara</string>
-    <string name="et_network">Endereço Rede</string>
-    <string name="et_broadcast">Endereço Broadcast</string>
-    <string name="et_first_host">Endereço primeiro host</string>
-    <string name="et_last_host">Endereço útimo host</string>
-    <string name="et_amount_host">Hosts</string>
+    <string name="tv_network">Rede</string>
+    <string name="tv_broadcast">Broadcast</string>
+    <string name="tv_first_host">Primeiro host</string>
+    <string name="tv_last_host">Último host</string>
+    <string name="tv_amount_host">Hosts</string>
     <string name="et_err_length">formato inválido</string>
     <string name="et_err_not_numeric">somente números e pontos</string>
     <string name="et_err_out_of_range">valores fora do limites de 0 a 255</string>
